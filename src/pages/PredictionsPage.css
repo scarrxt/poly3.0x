@@ -1,0 +1,120 @@
+/* ── Predictions Page ─────────────────────────────────────── */
+.predictions-page { width: 100%; }
+
+/* Header */
+.predictions-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 1.75rem; flex-wrap: wrap; }
+.predictions-header h2 { font-size: 24px; font-weight: 700; color: var(--color-text-primary); margin: 0 0 4px; letter-spacing: -0.3px; }
+.predictions-subtitle { color: var(--color-text-secondary); font-size: 14px; margin: 0; }
+
+/* Timeframe */
+.timeframe-selector { display: flex; gap: 6px; flex-shrink: 0; }
+.timeframe-btn { padding: 7px 16px; background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-md); color: var(--color-text-secondary); font-size: 13px; font-weight: 600; transition: all var(--transition-fast); }
+.timeframe-btn:hover { border-color: var(--blue); color: var(--blue); }
+.timeframe-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+/* List */
+.predictions-list { display: flex; flex-direction: column; gap: 10px; }
+
+/* Card (button) */
+.prediction-card {
+  width: 100%;
+  text-align: left;
+  background: var(--color-background-primary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  animation: cardIn 350ms ease both;
+  transition: border-color var(--transition-base), transform var(--transition-base);
+}
+.prediction-card:hover { border-color: var(--blue); transform: translateY(-2px); }
+@keyframes cardIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* Card header */
+.prediction-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 16px 18px;
+  background: var(--color-background-secondary);
+  border-bottom: 1px solid var(--color-border-tertiary);
+  gap: 14px;
+}
+.prediction-market-info { flex: 1; min-width: 0; }
+.prediction-market-title { font-size: 15px; font-weight: 700; color: var(--color-text-primary); margin: 0 0 8px; line-height: 1.4; }
+.prediction-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.timeframe-badge { display: inline-block; padding: 3px 9px; background: rgba(127,119,221,0.12); color: var(--purple); border-radius: 20px; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+.confidence-level { display: inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.confidence-level[data-level="high"]   { background: var(--color-background-success); color: var(--color-text-success); }
+.confidence-level[data-level="medium"] { background: var(--color-background-warning); color: var(--color-text-warning); }
+.confidence-level[data-level="low"]    { background: var(--color-background-danger);  color: var(--red); }
+.market-link-icon { font-size: 16px; color: var(--blue); text-decoration: none; padding: 4px; flex-shrink: 0; opacity: 0.7; }
+.market-link-icon:hover { opacity: 1; }
+
+/* Prediction body */
+.prediction-body { padding: 14px 18px; display: flex; flex-direction: column; gap: 12px; }
+.prediction-recommendation { display: flex; align-items: stretch; gap: 0; border: 1px solid var(--color-border-tertiary); border-radius: var(--border-radius-md); overflow: hidden; }
+.recommendation-side { display: flex; flex-direction: column; justify-content: center; padding: 14px 18px; background: var(--blue); min-width: 100px; }
+.side-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: rgba(255,255,255,0.7); margin-bottom: 4px; }
+.side-answer { font-size: 22px; font-weight: 800; color: #fff; font-family: var(--font-mono); }
+.recommendation-split { display: flex; flex: 1; }
+.probability-item { flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 14px 10px; border-left: 1px solid var(--color-border-tertiary); }
+.prob-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--color-text-tertiary); margin-bottom: 4px; }
+.prob-value { font-size: 20px; font-weight: 800; font-family: var(--font-mono); color: var(--color-text-primary); }
+.probability-item:first-child .prob-value { color: var(--teal); }
+.probability-item:last-child  .prob-value { color: var(--red); }
+
+.prediction-open-hint { font-size: 12px; color: var(--color-text-tertiary); margin: 0; text-align: center; }
+
+/* Card footer (compact) */
+.prediction-footer.compact { padding: 10px 18px; border-top: 1px solid var(--color-border-tertiary); display: flex; justify-content: center; }
+.vote-chip { font-size: 12px; color: var(--blue); font-weight: 600; }
+
+/* Modal */
+.prediction-modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-start; justify-content: center; padding: 1rem; overflow-y: auto; }
+.prediction-modal { background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); width: 100%; max-width: 540px; position: relative; animation: modalIn 0.2s ease; margin: auto; }
+@keyframes modalIn { from { transform: scale(0.96) translateY(-10px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+.prediction-modal-header { display: flex; justify-content: space-between; align-items: flex-start; padding: 20px 20px 16px; gap: 12px; border-bottom: 1px solid var(--color-border-tertiary); }
+.prediction-modal-header .prediction-market-title { font-size: 17px; }
+.modal-close { background: none; border: none; font-size: 20px; color: var(--color-text-tertiary); padding: 2px 6px; line-height: 1; border-radius: 4px; flex-shrink: 0; margin-top: -2px; }
+.modal-close:hover { color: var(--color-text-primary); background: var(--color-background-secondary); }
+
+.prediction-modal-loading { display: flex; justify-content: center; padding: 3rem 0; }
+
+.prediction-reason { padding: 20px; border-bottom: 1px solid var(--color-border-tertiary); }
+.reason-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--color-text-tertiary); margin: 0 0 8px; font-family: var(--font-mono); }
+.reason-text { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; margin: 0; }
+
+.prediction-modal .prediction-recommendation { margin: 20px 20px 0; }
+
+.prediction-disclaimer { margin: 16px 20px 0; padding: 12px 14px; background: var(--color-background-warning); border-radius: var(--border-radius-md); border-left: 3px solid var(--amber); }
+.prediction-disclaimer p { font-size: 12px; color: var(--color-text-warning); margin: 0; line-height: 1.6; }
+
+/* Modal footer (vote buttons) */
+.prediction-footer { display: flex; gap: 8px; padding: 16px 20px; border-top: 1px solid var(--color-border-tertiary); flex-wrap: wrap; }
+.vote-btn { padding: 9px 16px; border-radius: var(--border-radius-md); font-size: 13px; font-weight: 600; cursor: pointer; border: 1px solid; transition: all var(--transition-fast); text-decoration: none; display: inline-flex; align-items: center; }
+.vote-btn.vote-like    { background: var(--color-background-success); color: var(--color-text-success); border-color: rgba(29,158,117,0.3); }
+.vote-btn.vote-dislike { background: var(--color-background-danger);  color: var(--red);                border-color: rgba(226,75,74,0.3); }
+.vote-btn.vote-like:hover    { background: rgba(29,158,117,0.2); }
+.vote-btn.vote-dislike:hover { background: rgba(226,75,74,0.2); }
+.vote-btn.disabled { opacity: 0.45; cursor: not-allowed; }
+.vote-btn.open-market-btn { background: var(--blue); color: #fff; border-color: var(--blue); margin-left: auto; }
+.vote-btn.open-market-btn:hover { background: var(--color-primary-dark); }
+
+@media (max-width: 480px) {
+  .predictions-header { flex-direction: column; gap: 12px; }
+  .prediction-card-header { padding: 14px; }
+  .prediction-body { padding: 14px; }
+  .recommendation-side { padding: 12px 14px; min-width: 80px; }
+  .side-answer { font-size: 18px; }
+  .prediction-modal-header { padding: 16px 16px 14px; }
+  .prediction-reason { padding: 16px; }
+  .prediction-modal .prediction-recommendation { margin: 16px 16px 0; }
+  .prediction-disclaimer { margin: 12px 16px 0; }
+  .prediction-footer { padding: 12px 16px; }
+  .vote-btn.open-market-btn { margin-left: 0; }
+}

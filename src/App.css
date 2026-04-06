@@ -1,0 +1,44 @@
+/* ── App Shell ─────────────────────────────────────────────── */
+.app { min-height: 100vh; display: flex; flex-direction: column; background: var(--color-background-tertiary); }
+
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+@media (min-width: 640px) { .app-main { padding: 2rem 1.5rem; } }
+@media (min-width: 960px) { .app-main { padding: 2.5rem 2rem; } }
+
+/* ── Shared loading / empty / error ───────────────────────── */
+.loading { display: flex; align-items: center; justify-content: center; min-height: 200px; }
+.loading-spinner { width: 32px; height: 32px; border: 2.5px solid var(--color-border-tertiary); border-top-color: var(--blue); border-radius: 50%; animation: spin 0.7s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 240px; text-align: center; padding: 2rem 1rem; }
+.empty-state svg { width: 60px; height: 60px; margin-bottom: 1rem; opacity: 0.15; color: var(--blue); }
+.empty-state h3 { font-size: 16px; font-weight: 600; color: var(--color-text-primary); margin: 0 0 6px; }
+.empty-state p { color: var(--color-text-tertiary); font-size: 13px; margin: 0 0 1.25rem; }
+.empty-state button { padding: 8px 20px; background: var(--color-background-info); color: var(--color-text-info); border: 1px solid rgba(55,138,221,0.3); border-radius: var(--border-radius-md); font-weight: 600; font-size: 13px; }
+
+.error-container { background: var(--color-background-danger); border: 1px solid rgba(226,75,74,0.3); border-radius: var(--border-radius-md); padding: 14px 16px; margin-bottom: 1rem; }
+.error-container h4 { color: var(--red); margin: 0 0 5px; font-size: 13px; font-weight: 600; }
+.error-container p { color: var(--color-text-secondary); font-size: 13px; margin: 0; line-height: 1.5; }
+.error-retry-button { margin-top: 10px; padding: 7px 14px; background: rgba(226,75,74,0.12); color: var(--red); border: 1px solid rgba(226,75,74,0.3); border-radius: var(--border-radius-md); font-size: 12px; font-weight: 600; cursor: pointer; }
+
+/* ── Not found ─────────────────────────────────────────────── */
+.not-found-page { min-height: 50vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.not-found-card { width: min(480px,100%); background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 2.5rem 2rem; text-align: center; }
+.not-found-card h2 { margin: 0 0 10px; font-size: 20px; font-weight: 700; }
+.not-found-card p { margin: 0; color: var(--color-text-secondary); font-size: 14px; }
+.not-found-card button { margin-top: 1.5rem; padding: 10px 24px; background: var(--blue); color: #fff; border: none; border-radius: var(--border-radius-md); font-weight: 600; font-size: 14px; }
+
+/* ── Admin login ───────────────────────────────────────────── */
+.admin-login { display: flex; align-items: center; justify-content: center; min-height: calc(100vh - 120px); padding: 1rem; }
+.admin-login-card { background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-top: 3px solid var(--red); border-radius: var(--border-radius-lg); padding: 2rem 1.75rem; width: 100%; max-width: 420px; }
+.admin-login-card h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; color: var(--color-text-primary); }
+.admin-login-card form { display: flex; flex-direction: column; gap: 12px; margin-top: 1.5rem; }
+.admin-login-card button[type="submit"] { padding: 10px; background: var(--red); color: #fff; border: none; border-radius: var(--border-radius-md); font-weight: 700; font-size: 14px; margin-top: 4px; }
+.admin-login-card button[type="submit"]:disabled { opacity: 0.55; cursor: not-allowed; }
+.admin-login-hint { margin-top: 12px; font-size: 12px; color: var(--color-text-tertiary); line-height: 1.6; }

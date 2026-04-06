@@ -1,0 +1,10 @@
+/* ── Email Verification ───────────────────────────────────── */
+.email-verification-page { min-height: 50vh; display: flex; align-items: center; justify-content: center; padding: 1.25rem; }
+.verification-card { width: min(480px, 100%); background: var(--color-background-primary); border: 1px solid var(--color-border-secondary); border-radius: var(--border-radius-lg); padding: 2.5rem 2rem; text-align: center; }
+.verification-card h2 { margin: 0 0 10px; color: var(--color-text-primary); font-size: 22px; font-weight: 700; }
+.verification-card p { margin: 0; color: var(--color-text-secondary); font-size: 14px; line-height: 1.6; }
+.verification-card.success h2 { color: var(--teal); }
+.verification-card.success { border-color: rgba(29,158,117,0.3); }
+.verification-card.error h2 { color: var(--red); }
+.verification-card.error { border-color: rgba(226,75,74,0.3); }
+.verification-card button { margin-top: 1.5rem; padding: 10px 24px; background: var(--blue); color: #fff; border: none; border-radius: var(--border-radius-md); font-weight: 700; font-size: 14px; cursor: pointer; }
