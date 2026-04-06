@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import './App.css';
 import Header from './components/layout/Header';
-import Navigation from './components/layout/Navigation';
 import ErrorBoundary from './components/ErrorBoundary';
 import Toast from './components/Toast';
 import MarketsPage from './pages/MarketsPage';
@@ -123,12 +122,9 @@ function App() {
             handleNavigate('markets');
           }}
           isAdmin={!!adminAuth}
-        />
-        <Navigation
           currentPage={currentPage}
           onNavigate={handleNavigate}
-          isAdmin={!!adminAuth}
-          hideAll={hideNavigation}
+          hideNavigation={hideNavigation}
         />
         <main className="app-main">
           {renderPage()}
