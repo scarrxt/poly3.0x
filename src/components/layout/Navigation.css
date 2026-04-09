@@ -29,8 +29,8 @@
   cursor: pointer;
 }
 .nav-toggle-icon {
-  width: 70px;
-  height: 70px;
+  width: 60px;
+  height: 60px;
   overflow: visible;
 }
 
@@ -223,13 +223,13 @@
   .nav-container { padding: 0 0.5rem; }
 
   .nav-toggle {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
   }
 
   .nav-toggle-icon {
-    width: 60px;
-    height: 60px;
+    width: 52px;
+    height: 52px;
   }
 
   .nav-link {
