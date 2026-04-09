@@ -166,14 +166,24 @@ export default function NotificationPage({ showToast }) {
             className={`type-btn ${notificationType === 'push' ? 'active' : ''}`}
             onClick={() => setNotificationType('push')}
           >
-            <span className="type-icon">🔔</span>
+            <span className="type-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+                <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+              </svg>
+            </span>
             <span className="type-name">Push Notifications</span>
           </button>
           <button
             className={`type-btn ${notificationType === 'email' ? 'active' : ''}`}
             onClick={() => setNotificationType('email')}
           >
-            <span className="type-icon">📧</span>
+            <span className="type-icon">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="4" width="20" height="16" rx="2" />
+                <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+              </svg>
+            </span>
             <span className="type-name">Email Alerts</span>
           </button>
         </div>

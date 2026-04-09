@@ -17,8 +17,8 @@
 }
 .nav-toggle {
   display: none;
-  width: 44px;
-  height: 44px;
+  width: 52px;
+  height: 52px;
   padding: 0;
   border: none;
   background: transparent;
@@ -28,13 +28,42 @@
   gap: 5px;
   cursor: pointer;
 }
-.nav-toggle-line {
-  width: 20px;
-  height: 2px;
-  background: var(--color-text-secondary);
-  border-radius: 2px;
-  transition: transform 220ms ease, opacity 200ms ease, background-color 200ms ease;
-  transform-origin: center;
+.nav-toggle-icon {
+  width: 70px;
+  height: 70px;
+  overflow: visible;
+}
+
+.nav-toggle circle {
+  fill: rgba(255, 255, 255, 0.12);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+.nav-toggle:hover circle {
+  opacity: 1;
+}
+
+.nav-toggle path {
+  fill: none;
+  stroke: var(--color-text-secondary);
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  --length: 24;
+  --offset: -38;
+  stroke-dasharray: var(--length) var(--total-length);
+  stroke-dashoffset: var(--offset);
+  transition: stroke 200ms ease, stroke-dasharray 800ms cubic-bezier(0.645, 0.045, 0.355, 1), stroke-dashoffset 800ms cubic-bezier(0.645, 0.045, 0.355, 1), transform 800ms cubic-bezier(0.645, 0.045, 0.355, 1);
+}
+
+.nav-toggle .line--1,
+.nav-toggle .line--3 {
+  --total-length: 126.64183044433594;
+}
+
+.nav-toggle .line--2 {
+  --total-length: 70;
 }
 .nav-links { display: flex; min-width: max-content; }
 .nav-link {
@@ -60,14 +89,19 @@
 .nav-link.admin:hover { color: var(--amber); }
 .nav-link.admin.active { color: var(--amber); border-bottom-color: var(--amber); }
 
-.nav-toggle.open .nav-toggle-line:nth-child(1) {
-  transform: translateY(7px) rotate(45deg);
+.nav-toggle.open path {
+  stroke: var(--color-text-primary);
 }
-.nav-toggle.open .nav-toggle-line:nth-child(2) {
-  opacity: 0;
+
+.nav-toggle.open .line--1,
+.nav-toggle.open .line--3 {
+  --length: 22.627416998;
+  --offset: -94.1149185097;
 }
-.nav-toggle.open .nav-toggle-line:nth-child(3) {
-  transform: translateY(-7px) rotate(-45deg);
+
+.nav-toggle.open .line--2 {
+  --length: 0;
+  --offset: -50;
 }
 
 .navigation.inline {
@@ -188,6 +222,16 @@
 @media (max-width: 480px) {
   .nav-container { padding: 0 0.5rem; }
 
+  .nav-toggle {
+    width: 50px;
+    height: 50px;
+  }
+
+  .nav-toggle-icon {
+    width: 60px;
+    height: 60px;
+  }
+
   .nav-link {
     padding: 12px 12px;
     font-size: 12px;
@@ -195,6 +239,13 @@
 
   .nav-links {
     width: 100vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-toggle path,
+  .nav-links {
+    transition-duration: 0.01ms;
   }
 }
 
