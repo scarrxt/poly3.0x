@@ -191,7 +191,22 @@ export const adminAPI = {
     apiClient.post('/api/admin/cleanup/subscriptions', {}, auth),
   
   getDashboardStats: (auth) =>
-    apiClient.get('/api/admin/debug', auth)
+    apiClient.get('/api/admin/debug', auth),
+
+  clearCache: (auth) =>
+    apiClient.post('/api/admin/cache/clear', {}, auth),
+
+  runCronJobs: (auth) =>
+    apiClient.post('/api/admin/cron/run', {}, auth),
+
+  getExternalSourcesHealth: (auth) =>
+    apiClient.get('/api/admin/health/external-sources', auth),
+
+  getExternalDataMetrics: (auth) =>
+    apiClient.get('/api/admin/metrics/external-data', auth),
+
+  getMarketExternalData: (marketId, auth) =>
+    apiClient.get(`/api/admin/external-data/${encodeURIComponent(marketId)}`, auth)
 };
 
 export { ApiError };

@@ -46,22 +46,13 @@ function App() {
       setCurrentPage(resolvePageFromLocation());
     };
 
-    const onSecretShortcut = (event) => {
-      if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === 'a') {
-        event.preventDefault();
-        setCurrentPage('admin');
-      }
-    };
-
     syncRouteAccess();
     window.addEventListener('hashchange', syncRouteAccess);
     window.addEventListener('popstate', syncRouteAccess);
-    window.addEventListener('keydown', onSecretShortcut);
 
     return () => {
       window.removeEventListener('hashchange', syncRouteAccess);
       window.removeEventListener('popstate', syncRouteAccess);
-      window.removeEventListener('keydown', onSecretShortcut);
     };
   }, []);
 
@@ -86,6 +77,11 @@ function App() {
     }
   };
 
+  const handleAdminAuthInvalid = () => {
+    setAdminAuth(null);
+    setCurrentPage('admin');
+  };
+
   const renderPage = () => {
     switch (currentPage) {
       case 'markets':
@@ -98,7 +94,11 @@ function App() {
         return <NotificationPage showToast={showToast} />;
       case 'admin':
         return adminAuth ? (
-          <AdminPage adminAuth={adminAuth} showToast={showToast} />
+          <AdminPage
+            adminAuth={adminAuth}
+            showToast={showToast}
+            onAuthInvalid={handleAdminAuthInvalid}
+          />
         ) : (
           <AdminLoginPage setAdminAuth={setAdminAuth} showToast={showToast} setCurrentPage={handleNavigate} />
         );

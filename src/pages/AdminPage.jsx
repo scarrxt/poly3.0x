@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { adminAPI, ApiError } from '../api/client';
 import './AdminPage.css';
 
-export default function AdminPage({ adminAuth, showToast }) {
-  const [tab, setTab] = useState('pending'); // 'pending', 'dashboard', 'approved'
+export default function AdminPage({ adminAuth, showToast, onAuthInvalid }) {
+  const [tab, setTab] = useState('pending'); // 'pending', 'dashboard', 'approved', 'operations'
   const [predictions, setPredictions] = useState([]);
   const [tabCounts, setTabCounts] = useState({ pending: 0, approved: 0 });
   const [loading, setLoading] = useState(true);
@@ -12,12 +12,29 @@ export default function AdminPage({ adminAuth, showToast }) {
   const [editProbability, setEditProbability] = useState('');
   const [stats, setStats] = useState(null);
   const [notificationStats, setNotificationStats] = useState(null);
+  const [predictionStats, setPredictionStats] = useState(null);
+  const [externalHealth, setExternalHealth] = useState(null);
+  const [externalMetrics, setExternalMetrics] = useState(null);
+  const [marketId, setMarketId] = useState('');
+  const [marketDiagnostics, setMarketDiagnostics] = useState(null);
+  const [marketDiagnosticsLoading, setMarketDiagnosticsLoading] = useState(false);
+
+  const handleAdminAuthError = (err) => {
+    if (err instanceof ApiError && (err.statusCode === 401 || err.statusCode === 403)) {
+      onAuthInvalid?.();
+      showToast('Admin session expired. Please log in again.', 'error');
+      return true;
+    }
+    return false;
+  };
 
   useEffect(() => {
     if (tab === 'pending' || tab === 'approved') {
       fetchPredictions(tab);
     } else if (tab === 'dashboard') {
       fetchDashboardStats();
+    } else if (tab === 'operations') {
+      fetchOperationsData();
     }
   }, [tab]);
 
@@ -88,6 +105,7 @@ export default function AdminPage({ adminAuth, showToast }) {
         [status]: Number(data?.total ?? data?.count ?? items.length)
       }));
     } catch (err) {
+      if (handleAdminAuthError(err)) return;
       if (err instanceof ApiError) setError(err.message || `Unable to load ${status} predictions`);
       else setError(`Unable to load ${status} predictions. Check backend CORS/admin headers.`);
     } finally {
@@ -106,9 +124,31 @@ export default function AdminPage({ adminAuth, showToast }) {
       setStats(data);
       setNotificationStats(notifications);
     } catch (err) {
+      if (handleAdminAuthError(err)) return;
       if (err instanceof ApiError) {
         setError('Unable to load dashboard stats');
       }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchOperationsData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const [predStats, extHealth, extMetrics] = await Promise.all([
+        adminAPI.getPredictionStats(adminAuth),
+        adminAPI.getExternalSourcesHealth(adminAuth),
+        adminAPI.getExternalDataMetrics(adminAuth)
+      ]);
+      setPredictionStats(predStats);
+      setExternalHealth(extHealth);
+      setExternalMetrics(extMetrics);
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
+      if (err instanceof ApiError) setError(err.message || 'Unable to load admin operations data');
+      else setError('Unable to load admin operations data');
     } finally {
       setLoading(false);
     }
@@ -119,8 +159,54 @@ export default function AdminPage({ adminAuth, showToast }) {
       const result = await adminAPI.cleanupSubscriptions(adminAuth);
       showToast(`Cleanup done: ${result.push ?? 0} push, ${result.email ?? 0} email`, 'success');
       if (tab === 'dashboard') fetchDashboardStats();
-    } catch {
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
       showToast('Failed to clean subscriptions', 'error');
+    }
+  };
+
+  const handleRunCron = async () => {
+    try {
+      await adminAPI.runCronJobs(adminAuth);
+      showToast('Cron jobs executed', 'success');
+      if (tab === 'operations') fetchOperationsData();
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
+      showToast('Failed to run cron jobs', 'error');
+    }
+  };
+
+  const handleClearCache = async () => {
+    try {
+      await adminAPI.clearCache(adminAuth);
+      showToast('Cache cleared successfully', 'success');
+      if (tab === 'operations' || tab === 'dashboard') {
+        fetchOperationsData();
+        fetchDashboardStats();
+      }
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
+      showToast('Failed to clear cache', 'error');
+    }
+  };
+
+  const handleFetchMarketDiagnostics = async () => {
+    if (!marketId.trim()) {
+      showToast('Enter a valid market ID', 'error');
+      return;
+    }
+
+    setMarketDiagnosticsLoading(true);
+    try {
+      const data = await adminAPI.getMarketExternalData(marketId.trim(), adminAuth);
+      setMarketDiagnostics(data);
+      showToast('Market diagnostics loaded', 'success');
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
+      setMarketDiagnostics(null);
+      showToast('Unable to fetch market diagnostics', 'error');
+    } finally {
+      setMarketDiagnosticsLoading(false);
     }
   };
 
@@ -129,7 +215,8 @@ export default function AdminPage({ adminAuth, showToast }) {
       await adminAPI.approvePrediction(predictionId, 'Approved via dashboard', adminAuth);
       showToast('Prediction approved', 'success');
       fetchPredictions(tab);
-    } catch {
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
       showToast('Failed to approve prediction', 'error');
     }
   };
@@ -139,7 +226,8 @@ export default function AdminPage({ adminAuth, showToast }) {
       await adminAPI.rejectPrediction(predictionId, 'Rejected via dashboard', adminAuth);
       showToast('Prediction rejected', 'success');
       fetchPredictions(tab);
-    } catch {
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
       showToast('Failed to reject prediction', 'error');
     }
   };
@@ -156,7 +244,8 @@ export default function AdminPage({ adminAuth, showToast }) {
       setEditingId(null);
       setEditProbability('');
       fetchPredictions(tab);
-    } catch {
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
       showToast('Failed to update probability', 'error');
     }
   };
@@ -173,7 +262,8 @@ export default function AdminPage({ adminAuth, showToast }) {
       }
       showToast('Prediction deleted', 'success');
       fetchPredictions(tab);
-    } catch {
+    } catch (err) {
+      if (handleAdminAuthError(err)) return;
       showToast('Failed to delete prediction', 'error');
     }
   };
@@ -219,6 +309,12 @@ export default function AdminPage({ adminAuth, showToast }) {
           >
             Dashboard
           </button>
+          <button
+            className={`admin-tab ${tab === 'operations' ? 'active' : ''}`}
+            onClick={() => setTab('operations')}
+          >
+            Operations
+          </button>
         </div>
       </div>
 
@@ -235,6 +331,8 @@ export default function AdminPage({ adminAuth, showToast }) {
           <button className="error-retry-button" onClick={() => {
             if (tab === 'dashboard') {
               fetchDashboardStats();
+            } else if (tab === 'operations') {
+              fetchOperationsData();
             } else {
               fetchPredictions(tab);
             }
@@ -249,6 +347,21 @@ export default function AdminPage({ adminAuth, showToast }) {
           stats={stats}
           notificationStats={notificationStats}
           onCleanupSubscriptions={handleCleanupSubscriptions}
+        />
+      )}
+
+      {!loading && tab === 'operations' && (
+        <AdminOperations
+          predictionStats={predictionStats}
+          externalHealth={externalHealth}
+          externalMetrics={externalMetrics}
+          marketId={marketId}
+          setMarketId={setMarketId}
+          marketDiagnostics={marketDiagnostics}
+          marketDiagnosticsLoading={marketDiagnosticsLoading}
+          onRunCron={handleRunCron}
+          onClearCache={handleClearCache}
+          onFetchMarketDiagnostics={handleFetchMarketDiagnostics}
         />
       )}
 
@@ -457,6 +570,71 @@ function AdminDashboard({ stats, notificationStats, onCleanupSubscriptions }) {
       <div className="system-info">
         <h4>Notification Controls</h4>
         <button className="btn-edit" onClick={onCleanupSubscriptions}>Clean Invalid Subscriptions</button>
+      </div>
+    </div>
+  );
+}
+
+function AdminOperations({
+  predictionStats,
+  externalHealth,
+  externalMetrics,
+  marketId,
+  setMarketId,
+  marketDiagnostics,
+  marketDiagnosticsLoading,
+  onRunCron,
+  onClearCache,
+  onFetchMarketDiagnostics
+}) {
+  const statsPretty = predictionStats ? JSON.stringify(predictionStats, null, 2) : 'No stats available';
+  const healthPretty = externalHealth ? JSON.stringify(externalHealth, null, 2) : 'No health data available';
+  const metricsPretty = externalMetrics ? JSON.stringify(externalMetrics, null, 2) : 'No metrics available';
+  const diagnosticsPretty = marketDiagnostics ? JSON.stringify(marketDiagnostics, null, 2) : null;
+
+  return (
+    <div className="admin-operations">
+      <div className="system-info">
+        <h4>Admin Controls</h4>
+        <div className="admin-actions">
+          <button className="btn-edit" onClick={onRunCron}>
+            Run Cron Jobs
+          </button>
+          <button className="btn-delete" onClick={onClearCache}>
+            Clear Cache
+          </button>
+        </div>
+      </div>
+
+      <div className="system-info">
+        <h4>Prediction Stats</h4>
+        <pre className="admin-json-block">{statsPretty}</pre>
+      </div>
+
+      <div className="system-info">
+        <h4>External Sources Health</h4>
+        <pre className="admin-json-block">{healthPretty}</pre>
+      </div>
+
+      <div className="system-info">
+        <h4>External Data Metrics</h4>
+        <pre className="admin-json-block">{metricsPretty}</pre>
+      </div>
+
+      <div className="system-info">
+        <h4>Market External Diagnostics</h4>
+        <div className="market-diagnostics-form">
+          <input
+            type="text"
+            value={marketId}
+            onChange={(event) => setMarketId(event.target.value)}
+            placeholder="Enter market ID"
+          />
+          <button className="btn-save" onClick={onFetchMarketDiagnostics} disabled={marketDiagnosticsLoading}>
+            {marketDiagnosticsLoading ? 'Loading...' : 'Fetch'}
+          </button>
+        </div>
+        {diagnosticsPretty && <pre className="admin-json-block">{diagnosticsPretty}</pre>}
       </div>
     </div>
   );

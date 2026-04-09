@@ -71,6 +71,33 @@
 .system-info li { font-size: 13px; color: var(--color-text-secondary); padding: 7px 0; border-bottom: 1px solid var(--color-border-tertiary); font-family: var(--font-mono); }
 .system-info li:last-child { border-bottom: none; }
 
+.admin-operations { display: flex; flex-direction: column; gap: 12px; }
+.admin-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.admin-json-block {
+  margin: 0;
+  padding: 12px;
+  max-height: 320px;
+  overflow: auto;
+  background: var(--color-background-secondary);
+  border: 1px solid var(--color-border-tertiary);
+  border-radius: var(--border-radius-md);
+  color: var(--color-text-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+  font-family: var(--font-mono);
+}
+
+.market-diagnostics-form {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.market-diagnostics-form input {
+  flex: 1 1 280px;
+}
+
 @media (max-width: 580px) {
   .admin-header { flex-direction: column; align-items: flex-start; }
   .card-header { flex-direction: column; }
