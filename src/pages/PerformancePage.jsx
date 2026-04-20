@@ -184,33 +184,6 @@ export default function PerformancePage({ showToast }) {
           )}
         </section>
 
-        {performance.pendingPredictions && performance.pendingPredictions.length > 0 && (
-          <section className="prediction-section">
-            <h3>⏳ Pending Resolution</h3>
-            <div className="prediction-list">
-              {performance.pendingPredictions.map((pred) => (
-                <div key={pred.id} className="prediction-outcome pending">
-                  <div className="outcome-header">
-                    <span className="outcome-badge">⏳</span>
-                    <div className="outcome-info">
-                      <h4>{pred.marketTitle}</h4>
-                      <p>{pred.predictedAnswer}</p>
-                    </div>
-                  </div>
-                  <div className="outcome-details">
-                    <span className="confidence-badge" style={{ background: '#854f0b' }}>
-                      {pred.confidence}% confidence
-                    </span>
-                    <span className="outcome-date">{new Date(pred.predictionDate).toLocaleDateString()}</span>
-                  </div>
-                  <a href={pred.polymarketUrl} target="_blank" rel="noopener noreferrer" className="outcome-link">
-                    View →
-                  </a>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
       </div>
     </div>
   );
